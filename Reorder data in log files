@@ -1,0 +1,28 @@
+class Solution {
+    public String[] reorderLogFiles(String[] logs) {
+        // Separate the logs into a list so we can sort with a custom comparator
+        Arrays.sort(logs, (a, b) -> {
+            int i1 = a.indexOf(' ');                  // first space splits id vs. content
+            int i2 = b.indexOf(' ');
+            String id1 = a.substring(0, i1);
+            String id2 = b.substring(0, i2);
+            String body1 = a.substring(i1 + 1);
+            String body2 = b.substring(i2 + 1);
+
+            boolean isDigit1 = Character.isDigit(body1.charAt(0));
+            boolean isDigit2 = Character.isDigit(body2.charAt(0));
+
+            if (!isDigit1 && !isDigit2) {             // both are letter-logs
+                int cmp = body1.compareTo(body2);     // 1. sort by content
+                if (cmp != 0) return cmp;
+                return id1.compareTo(id2);            // 2. tie-breaker: identifier
+            }
+            if (!isDigit1) return -1;                 // letter-logs < digit-logs
+            if (!isDigit2) return 1;                  // digit-logs > letter-logs
+            return 0;                                 // both digit-logs: keep original order
+        });
+
+        return logs;                                  // in-place sort, just return array
+    
+    }
+}
