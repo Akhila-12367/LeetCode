@@ -1,0 +1,41 @@
+class Solution {
+    public int kthSmallest(int[][] matrix, int k) {
+        int n = matrix.length;
+        int lo = matrix[0][0];          // smallest value
+        int hi = matrix[n - 1][n - 1];  // largest value
+
+        while (lo < hi) {
+            int mid = lo + ((hi - lo) >> 1);
+
+            // count how many numbers ≤ mid
+            int count = 0;
+            for (int[] row : matrix) {
+                count += upperBound(row, mid);  // binary-search each row
+            }
+
+            if (count < k) {
+                lo = mid + 1;   // k-th element is larger
+            } else {
+                hi = mid;       // k-th element is ≤ mid
+            }
+        }
+        return lo;              // lo == hi == k-th smallest
+    }
+
+    // index of first element > target  (i.e. 1 + last index ≤ target)
+    private int upperBound(int[] row, int target) {
+        int l = 0, r = row.length;      // r is exclusive
+        while (l < r) {
+            int m = l + ((r - l) >> 1);
+            if (row[m] <= target) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return l;   // number of elements ≤ target
+
+
+        
+    }
+}
